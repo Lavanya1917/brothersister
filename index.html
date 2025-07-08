@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Brothers Day!</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for a nicer look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.5s ease, background-image 0.5s ease; /* Smooth background transitions */
+        }
+        /* Custom scrollbar for memory section */
+        .scrollable-memories::-webkit-scrollbar {
+            height: 8px;
+        }
+        .scrollable-memories::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .scrollable-memories::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .scrollable-memories::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Page transition animation */
+        .page-section {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.7s ease-out forwards;
+        }
+        .page-section.active {
+            display: block; /* Shown when active */
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-400 to-purple-600 flex flex-col items-center justify-center p-4">
+
+    <!-- Background Change Button -->
+    <button id="change-bg-btn" class="absolute top-4 right-4 bg-gray-800 text-white text-sm py-2 px-4 rounded-full shadow-lg z-50 hover:bg-gray-700 transition duration-300">
+        Change Background
+    </button>
+
+    <div class="app-container bg-white rounded-xl shadow-2xl p-6 md:p-10 max-w-4xl w-full mx-auto my-8 transform transition-all duration-500">
+
+        <!-- Page 1: Introduction -->
+        <section id="page-intro" class="page-section active text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight mb-4">
+                A Special Tribute to My Brother
+            </h1>
+            <p class="text-lg md:text-xl text-gray-600 mb-8">
+                Celebrating our unique bond and cherished memories.
+            </p>
+            <button id="start-journey-btn" class="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+                Start Our Journey
+            </button>
+        </section>
+
+        <!-- Page 2: Dynamic Messages -->
+        <section id="page-messages" class="page-section text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">A Wish Just For You</h2>
+            <div class="message-section p-6 bg-blue-50 rounded-lg shadow-inner mb-8">
+                <p id="current-message" class="text-xl md:text-2xl text-gray-700 italic mb-6 leading-relaxed">
+                    Click the button below to see a special message!
+                </p>
+                <button id="next-message-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+                    Next Message
+                </button>
+            </div>
+            <div class="flex justify-between mt-8">
+                <button id="back-to-intro-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-full shadow-md transition duration-300">
+                    &larr; Back
+                </button>
+                <button id="next-to-memories-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+                    Next: Memories &rarr;
+                </button>
+            </div>
+        </section>
+
+        <!-- Page 3: Cherished Memories -->
+        <section id="page-memories" class="page-section">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-6">Our Cherished Memories</h2>
+            <div id="memory-carousel" class="scrollable-memories flex overflow-x-auto snap-x snap-mandatory pb-4 space-x-6">
+                <!-- Memory cards will be injected here by JavaScript -->
+            </div>
+            <div class="flex justify-center mt-6 space-x-4">
+                <button id="prev-memory-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+                    &larr; Previous
+                </button>
+                <button id="next-memory-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+                    Next &rarr;
+                </button>
+            </div>
+            <div class="flex justify-center mt-8">
+                <button id="back-to-messages-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-full shadow-md transition duration-300">
+                    &larr; Back
+                </button>
+            </div>
+        </section>
+
+        <!-- Footer Section (visible on all pages) -->
+        <footer class="text-center text-gray-500 text-sm mt-8 pt-4 border-t border-gray-200">
+            &copy; 2025 Created with ❤️ for my amazing brother.
+        </footer>
+    </div>
+
+    <script>
+        // JavaScript for dynamic content and interactions
+
+        // --- Background Management ---
+        const backgroundClasses = [
+            "bg-gradient-to-br from-blue-400 to-purple-600",
+            "bg-gradient-to-br from-green-400 to-blue-500",
+            "bg-gradient-to-br from-yellow-400 to-orange-500",
+            "bg-gradient-to-br from-red-400 to-pink-500",
+            "bg-gradient-to-br from-indigo-500 to-purple-700",
+            "bg-gradient-to-br from-teal-400 to-cyan-500"
+        ];
+        let currentBgIndex = 0;
+        const body = document.body;
+        const changeBgBtn = document.getElementById('change-bg-btn');
+
+        /**
+         * Cycles through the predefined background gradient classes.
+         */
+        function changeBackground() {
+            // Remove all existing background classes by splitting the string into individual classes
+            backgroundClasses.forEach(clsString => {
+                clsString.split(' ').forEach(cls => body.classList.remove(cls));
+            });
+            // Add the new background class by splitting the string into individual classes
+            backgroundClasses[currentBgIndex].split(' ').forEach(cls => body.classList.add(cls));
+            currentBgIndex = (currentBgIndex + 1) % backgroundClasses.length;
+        }
+
+        // Initial background setup
+        changeBackground(); // Call once to set the first background
+
+        // Event listener for background change button
+        changeBgBtn.addEventListener('click', changeBackground);
+
+        // --- Page Navigation ---
+        const pageIntro = document.getElementById('page-intro');
+        const pageMessages = document.getElementById('page-messages');
+        const pageMemories = document.getElementById('page-memories');
+
+        const startJourneyBtn = document.getElementById('start-journey-btn');
+        const nextToMemoriesBtn = document.getElementById('next-to-memories-btn');
+        const backToIntroBtn = document.getElementById('back-to-intro-btn');
+        const backToMessagesBtn = document.getElementById('back-to-messages-btn');
+
+        let currentPage = 'intro'; // Keep track of the current page
+
+        /**
+         * Shows the specified page and hides others.
+         * @param {string} pageId - The ID of the page section to show (e.g., 'page-intro', 'page-messages').
+         */
+        function showPage(pageId) {
+            const allPages = document.querySelectorAll('.page-section');
+            allPages.forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            currentPage = pageId.replace('page-', ''); // Update current page state
+        }
+
+        // Event listeners for page navigation buttons
+        startJourneyBtn.addEventListener('click', () => showPage('page-messages'));
+        nextToMemoriesBtn.addEventListener('click', () => showPage('page-memories'));
+        backToIntroBtn.addEventListener('click', () => showPage('page-intro'));
+        backToMessagesBtn.addEventListener('click', () => showPage('page-messages'));
+
+        // --- Dynamic Messages (existing logic) ---
+        const messages = [
+            "Happy Brothers Day to my first best friend and forever confidant. Thanks for always having my back!",
+            "To my brother, the one who knows all my secrets and still loves me anyway. You're the best!",
+            "Through thick and thin, laughter and tears, you've always been there. Happy Brothers Day, bro!",
+            "They say brothers are like built-in best friends. Couldn't agree more! Happy Brothers Day!",
+            "No matter where life takes us, the bond of brotherhood will always keep us connected. Cheers!",
+            "Thanks for all the adventures, the inside jokes, and for making life so much more fun. Happy Brothers Day!",
+            "A brother is a gift to the heart, a friend to the spirit, a golden thread to the meaning of life. Happy Brothers Day!",
+            "You're not just my brother, you're my anchor, my sounding board, and my biggest fan. Love you, bro!",
+            "Here's to the one who taught me how to be tough, how to laugh at myself, and how to never give up. Happy Brothers Day!",
+            "May our bond continue to grow stronger with each passing year. Happy Brothers Day to my incredible brother!"
+        ];
+
+        let currentMessageIndex = 0;
+        const messageDisplay = document.getElementById('current-message');
+        const nextMessageBtn = document.getElementById('next-message-btn');
+
+        /**
+         * Displays the next message in the `messages` array.
+         * Cycles back to the beginning after reaching the end.
+         */
+        function displayNextMessage() {
+            messageDisplay.textContent = messages[currentMessageIndex];
+            currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+        }
+
+        // Initial message display
+        displayNextMessage();
+
+        // Event listener for the "Next Message" button
+        nextMessageBtn.addEventListener('click', displayNextMessage);
+
+        // --- Cherished Memories (existing logic) ---
+        const memories = [
+            {
+                image: "images/img1.jpg",
+                description: "Remember those endless summer days exploring the woods behind our house? Pure magic!"
+            },
+            {
+                image: "images/img2.jpg",
+                description: "Learning to ride bikes together, scraped knees and all. You always pushed me to go faster!"
+            },
+            {
+                image: "images/img3.jpg",
+                description: "That unforgettable road trip where we sang our hearts out to every song on the radio."
+            },
+            {
+                image: "images/img7.jpg",
+                description: "Countless hours spent battling bosses and laughing until our sides hurt during our gaming marathons."
+            },
+            {
+                image: "images/img4.jpg",
+                description: "Getting into (and out of) trouble together in high school. Good times, bad decisions, great memories!"
+            },
+            {
+                image: "images/img5.jpg",
+                description: "Celebrating our milestones together, always proud to see you achieve your dreams."
+            },
+            {
+                image: "images/img6.jpg",
+                description: "Those spontaneous trips and random adventures that turned into the best stories."
+            }
+        ];
+
+        const memoryCarousel = document.getElementById('memory-carousel');
+        const prevMemoryBtn = document.getElementById('prev-memory-btn');
+        const nextMemoryBtn = document.getElementById('next-memory-btn');
+
+        let currentMemoryIndex = 0;
+
+        /**
+         * Renders all memory cards into the carousel.
+         * Each card is a flex item that snaps into view.
+         */
+        function renderMemories() {
+            memoryCarousel.innerHTML = ''; // Clear existing memories
+            memories.forEach((memory, index) => {
+                const memoryCard = document.createElement('div');
+                memoryCard.className = `memory-card flex-shrink-0 w-80 md:w-96 bg-gray-50 rounded-xl shadow-md overflow-hidden snap-center transform transition-all duration-300 ${index === currentMemoryIndex ? 'scale-105 shadow-xl' : 'scale-100'}`;
+                memoryCard.innerHTML = `
+                    <img src="${memory.image}" alt="Memory ${index + 1}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <p class="text-gray-700 text-base md:text-lg">${memory.description}</p>
+                    </div>
+                `;
+                memoryCarousel.appendChild(memoryCard);
+            });
+            // Scroll to the current memory
+            scrollToMemory(currentMemoryIndex);
+        }
+
+        /**
+         * Scrolls the memory carousel to the specified index.
+         * @param {number} index - The index of the memory to scroll to.
+         */
+        function scrollToMemory(index) {
+            const memoryCards = memoryCarousel.querySelectorAll('.memory-card');
+            if (memoryCards.length > 0 && memoryCards[index]) {
+                const scrollLeft = memoryCards[index].offsetLeft - (memoryCarousel.offsetWidth / 2) + (memoryCards[index].offsetWidth / 2);
+                memoryCarousel.scrollTo({
+                    left: scrollLeft,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        /**
+         * Navigates to the previous memory in the carousel.
+         */
+        function showPreviousMemory() {
+            currentMemoryIndex = (currentMemoryIndex - 1 + memories.length) % memories.length;
+            renderMemories();
+        }
+
+        /**
+         * Navigates to the next memory in the carousel.
+         */
+        function showNextMemory() {
+            currentMemoryIndex = (currentMemoryIndex + 1) % memories.length;
+            renderMemories();
+        }
+
+        // Initial render of memories
+        renderMemories();
+
+        // Event listeners for memory navigation buttons
+        prevMemoryBtn.addEventListener('click', showPreviousMemory);
+        nextMemoryBtn.addEventListener('click', showNextMemory);
+
+        // Optional: Add keyboard navigation for memories
+        document.addEventListener('keydown', (event) => {
+            if (currentPage === 'memories') { // Only enable keyboard nav for memories page
+                if (event.key === 'ArrowLeft') {
+                    showPreviousMemory();
+                } else if (event.key === 'ArrowRight') {
+                    showNextMemory();
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
